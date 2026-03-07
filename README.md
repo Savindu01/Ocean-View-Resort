@@ -1,183 +1,385 @@
-# Ocean View Resort - Full-Stack Application
+# Ocean View Resort - Spring Boot Edition
 
-A modern resort reservation system with a **React frontend** and **Java REST backend**.
+A modern hotel reservation system built with **Spring Boot 3.2**, **Spring Data JPA**, and **React 18**.
 
-## 🌟 Features
+## 🚀 What Changed from Pure Java?
 
-- **Modern React Frontend**: Black & blue theme with professional UI
-- **Home Page**: Resort showcase with amenities and room types
-- **User Authentication**: Secure login with SHA-256 hashed passwords
-- **Reservation Management**: Complete CRUD operations
-- **Dashboard**: Statistics cards showing booking analytics
-- **Advanced Search**: Filter by guest name, room type, and dates
-- **Bill Generation**: Professional invoice layout with print support
-- **Responsive Design**: Works on desktop, tablet, and mobile
+This is a complete refactoring of the original pure Java implementation to use Spring Boot framework.
+
+### Key Improvements
+
+| Feature | Pure Java | Spring Boot |
+|---------|-----------|-------------|
+| **HTTP Server** | Manual `HttpServer` | Embedded Tomcat |
+| **JSON Handling** | Manual parsing | Jackson (automatic) |
+| **Database** | JDBC + SQL | Spring Data JPA (ORM) |
+| **Dependency Injection** | Manual `new` | @Autowired |
+| **Configuration** | Hardcoded | application.properties |
+| **Routing** | Manual handlers | @RestController annotations |
+| **Validation** | Manual checks | @Valid annotations |
+| **Testing** | JUnit + Mockito | Spring Boot Test |
+
+---
+
+## 📦 Technology Stack
+
+### Backend
+- **Spring Boot 3.2.0** - Application framework
+- **Spring Data JPA** - Database abstraction (Hibernate)
+- **Spring Web** - REST API (embedded Tomcat)
+- **Spring Validation** - Input validation
+- **MySQL 8.0** - Database
+- **Java 17** - Programming language
+
+### Frontend
+- **React 18** - UI framework
+- **Vite** - Build tool
+- **Material-UI** - Component library
+
+---
+
+## 🏗️ Project Structure
+
+```
+eresortjava-springboot/
+├── src/main/java/com/oceanview/eresort/
+│   ├── OceanViewResortApplication.java    # Main Spring Boot app
+│   ├── model/                              # JPA Entities
+│   │   ├── User.java                       # @Entity with @Id
+│   │   ├── Reservation.java                # @Entity with validations
+│   │   └── RoomType.java                   # Enum
+│   ├── repository/                         # Spring Data JPA
+│   │   ├── UserRepository.java             # extends JpaRepository
+│   │   └── ReservationRepository.java      # Auto-generated queries
+│   ├── service/                            # Business Logic
+│   │   ├── AuthService.java                # @Service
+│   │   └── ReservationService.java         # @Transactional
+│   ├── controller/                         # REST Controllers
+│   │   ├── AuthController.java             # @RestController
+│   │   └── ReservationController.java      # @RequestMapping
+│   ├── dto/                                # Data Transfer Objects
+│   │   ├── LoginRequest.java
+│   │   ├── LoginResponse.java
+│   │   ├── ReservationRequest.java
+│   │   └── ReservationResponse.java
+│   └── config/                             # Configuration
+│       ├── CorsConfig.java                 # CORS setup
+│       └── DataInitializer.java            # Startup initialization
+├── src/main/resources/
+│   └── application.properties              # Spring Boot config
+└── pom.xml                                 # Maven dependencies
+```
+
+---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
+- Java 17+
+- Maven 3.6+
+- MySQL 8.0+
+- Node.js 16+ (for frontend)
 
-- Java 11+
-- MySQL 5.7+
-- Node.js 16+
-- MySQL Connector/J 9.6.0
+### 1. Setup Database
 
-### Setup (5 minutes)
-
-1. **Clone and setup:**
-   ```bash
-   git clone <repository-url>
-   cd eresortjava
-   ```
-
-2. **Download MySQL Connector:**
-   - Get from: https://dev.mysql.com/downloads/connector/j/
-   - Place in: `lib/mysql-connector-j-9.6.0.jar`
-
-3. **Setup database:**
-   ```bash
-   mysql -u root -p < sql/schema.sql
-   ```
-
-4. **Compile backend:**
-   ```bash
-   javac -encoding UTF-8 -d out -cp "lib/*" src/model/*.java src/dao/*.java src/controller/*.java src/view/*.java src/*.java
-   ```
-
-5. **Install frontend:**
-   ```bash
-   cd frontend
-   npm install
-   cd ..
-   ```
-
-6. **Run (2 terminals):**
-   
-   Terminal 1 - Backend:
-   ```bash
-   $env:DB_PASS = "your_password"  # Windows
-   java -cp "out;lib/*" RestServer
-   ```
-   
-   Terminal 2 - Frontend:
-   ```bash
-   cd frontend
-   npm run dev
-   ```
-
-7. **Access:** http://localhost:5174
-
-**Default Login:** `admin` / `admin123`
-
-## 📁 Project Structure
-
-```
-eresortjava/
-├── src/                    # Java backend
-│   ├── controller/         # Business logic
-│   ├── dao/               # Database access
-│   ├── model/             # Data models
-│   └── RestServer.java    # REST API
-├── frontend/              # React frontend
-│   └── src/
-│       ├── pages/         # Home, Login, Dashboard, Help
-│       ├── utils/         # API client
-│       └── styles.css     # Black & blue theme
-├── sql/                   # Database schema
-└── lib/                   # MySQL connector (download separately)
+```bash
+mysql -u root -p
+CREATE DATABASE ocean_view_resort;
 ```
 
-## 🎨 UI Theme
+### 2. Configure Database
 
-Professional black and dark blue color scheme:
-- Background: Pure black with dark blue gradient
-- Accent: Dark blue (#1e3a8a) and bright blue (#2563eb)
-- Room types: Color-coded (Blue, Green, Amber, Dark Blue)
+Edit `src/main/resources/application.properties`:
 
-## 💰 Room Pricing
+```properties
+spring.datasource.password=your_password
+```
 
-| Room Type | Price/Night |
-|-----------|-------------|
-| Single    | LKR 5,000   |
-| Double    | LKR 8,000   |
-| Family    | LKR 12,000  |
-| Suite     | LKR 20,000  |
+Or set environment variable:
+```bash
+export DB_PASS=your_password
+```
 
-## 📚 Documentation
+### 3. Run Backend
 
-- **[SETUP.md](SETUP.md)** - Detailed setup instructions
-- **[READY_TO_COMMIT.md](READY_TO_COMMIT.md)** - Git commit guide
+```bash
+cd eresortjava-springboot
 
-## 🔧 API Endpoints
+# Using Maven
+mvn spring-boot:run
 
-- `POST /api/login` - User authentication
-- `GET /api/reservations` - List all reservations
-- `POST /api/reservations` - Create reservation
-- `GET /api/reservations/{id}` - Get reservation
-- `PUT /api/reservations/{id}` - Update reservation
-- `DELETE /api/reservations/{id}` - Delete reservation
+# Or build and run JAR
+mvn clean package
+java -jar target/eresort-springboot-1.0.0.jar
+```
 
-## 🐛 Troubleshooting
+Backend will start on: **http://localhost:8080**
 
-**Backend won't start:**
-- Check MySQL is running
-- Verify database exists
-- Ensure MySQL connector JAR is in `lib/`
+### 4. Run Frontend
 
-**Frontend won't start:**
-- Run `npm install` in frontend directory
-- Check Node.js version (16+)
+```bash
+cd ../eresortjava/frontend
+npm install
+npm run dev
+```
 
-**Port conflicts:**
-- Backend: 8080
-- Frontend: 5174
+Frontend will start on: **http://localhost:5173**
 
-See [SETUP.md](SETUP.md) for detailed troubleshooting.
+### 5. Access Application
 
-## 📦 What to Commit
+Open browser: **http://localhost:5173**
 
-**Commit these:**
-- All `.java` source files
-- All frontend source files
-- `package.json` and `package-lock.json`
-- `sql/schema.sql`
-- Documentation files
-
-**Don't commit (in .gitignore):**
-- `out/` - Compiled classes
-- `lib/` - MySQL connector
-- `frontend/node_modules/` - NPM packages
-- `*.class`, `*.log` - Build artifacts
-
-See [READY_TO_COMMIT.md](READY_TO_COMMIT.md) for details.
-
-## 🚢 Deployment
-
-1. Clone repository
-2. Download MySQL connector
-3. Run `npm install`
-4. Compile Java code
-5. Setup database
-6. Run backend and frontend
-
-See [SETUP.md](SETUP.md) for detailed instructions.
-
-## 🛠️ Tech Stack
-
-- **Backend**: Java 11, MySQL 8, JDBC
-- **Frontend**: React 18, Vite, Material-UI
-- **API**: REST with JSON
-- **Database**: MySQL
-
-## 📄 License
-
-Educational project for resort management system.
-
-## 👥 Support
-
-For setup help, see documentation files or create an issue.
+**Default Login:**
+- Username: `admin`
+- Password: `admin123`
 
 ---
 
-**Version:** 1.0  
-**Last Updated:** 2026-03-06
+## 📚 API Endpoints
+
+### Authentication
+```
+POST   /api/login              # Login with credentials
+GET    /api/users/exists       # Check if username exists
+```
+
+### Reservations
+```
+GET    /api/reservations                    # Get all reservations
+GET    /api/reservations?guestName=John     # Search by guest name
+GET    /api/reservations?roomType=SUITE     # Search by room type
+GET    /api/reservations?fromDate=2026-03-01&toDate=2026-03-31  # Date range
+GET    /api/reservations/{id}               # Get specific reservation
+POST   /api/reservations                    # Create reservation
+PUT    /api/reservations/{id}               # Update reservation
+DELETE /api/reservations/{id}               # Delete reservation
+```
+
+### Example Request
+
+**Create Reservation:**
+```bash
+curl -X POST http://localhost:8080/api/reservations \
+  -H "Content-Type: application/json" \
+  -d '{
+    "guestName": "John Silva",
+    "address": "Galle",
+    "contactNumber": "0771234567",
+    "roomType": "SUITE",
+    "checkInDate": "2026-03-06",
+    "checkOutDate": "2026-03-09"
+  }'
+```
+
+---
+
+## 🔑 Key Spring Boot Features Used
+
+### 1. **Dependency Injection**
+
+```java
+@Service
+public class ReservationService {
+    
+    @Autowired  // Spring automatically injects this!
+    private ReservationRepository repository;
+    
+    // No need for: new ReservationRepository()
+}
+```
+
+### 2. **Spring Data JPA - Auto-Generated Queries**
+
+```java
+@Repository
+public interface ReservationRepository extends JpaRepository<Reservation, String> {
+    
+    // Spring generates SQL automatically!
+    List<Reservation> findByGuestNameContainingIgnoreCase(String name);
+    List<Reservation> findByRoomType(RoomType type);
+}
+```
+
+### 3. **Automatic JSON Conversion**
+
+```java
+@RestController
+public class ReservationController {
+    
+    @GetMapping("/api/reservations")
+    public List<Reservation> getAll() {
+        return service.getAllReservations();
+        // Spring automatically converts to JSON!
+    }
+}
+```
+
+### 4. **Validation**
+
+```java
+@Entity
+public class Reservation {
+    
+    @NotBlank(message = "Guest name is required")
+    private String guestName;
+    
+    @Pattern(regexp = "^[0-9]{10}$", message = "Must be 10 digits")
+    private String contactNumber;
+}
+```
+
+### 5. **JPA Entity Mapping**
+
+```java
+@Entity
+@Table(name = "reservations")
+public class Reservation {
+    
+    @Id
+    private String reservationNumber;
+    
+    @Enumerated(EnumType.STRING)
+    private RoomType roomType;
+    
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+}
+```
+
+---
+
+## 🧪 Testing
+
+### Run Tests
+
+```bash
+mvn test
+```
+
+### Test Structure
+
+```
+src/test/java/com/oceanview/eresort/
+├── service/
+│   ├── ReservationServiceTest.java    # Unit tests with @Mock
+│   └── AuthServiceTest.java
+└── controller/
+    └── ReservationControllerTest.java  # Integration tests
+```
+
+---
+
+## 🔧 Configuration
+
+### application.properties
+
+```properties
+# Server
+server.port=8080
+
+# Database
+spring.datasource.url=jdbc:mysql://localhost:3306/ocean_view_resort
+spring.datasource.username=root
+spring.datasource.password=${DB_PASS:root}
+
+# JPA/Hibernate
+spring.jpa.hibernate.ddl-auto=update  # Auto-create/update tables
+spring.jpa.show-sql=true              # Show SQL in console
+
+# Logging
+logging.level.com.oceanview=DEBUG
+```
+
+---
+
+## 📊 Comparison: Before vs After
+
+### Creating a Reservation
+
+**Before (Pure Java):**
+```java
+// Manual JSON parsing
+String body = readBody(exchange.getRequestBody());
+String guestName = extractJsonField(body, "guestName");
+
+// Manual SQL
+String sql = "INSERT INTO reservations VALUES (?, ?, ?, ?, ?, ?, ?)";
+PreparedStatement stmt = conn.prepareStatement(sql);
+stmt.setString(1, reservationNumber);
+// ... set all parameters
+
+// Manual JSON response
+String json = "{\"reservationNumber\":\"" + r.getReservationNumber() + "\"}";
+```
+
+**After (Spring Boot):**
+```java
+@PostMapping("/api/reservations")
+public ResponseEntity<Reservation> create(@RequestBody ReservationRequest request) {
+    Reservation r = service.createReservation(...);
+    return ResponseEntity.ok(r);  // That's it!
+}
+```
+
+---
+
+## 🚢 Deployment
+
+### Build JAR
+
+```bash
+mvn clean package
+```
+
+### Run JAR
+
+```bash
+java -jar target/eresort-springboot-1.0.0.jar
+```
+
+### Docker (Optional)
+
+```dockerfile
+FROM openjdk:17-jdk-slim
+COPY target/eresort-springboot-1.0.0.jar app.jar
+ENTRYPOINT ["java", "-jar", "/app.jar"]
+```
+
+---
+
+## 🎯 Benefits of Spring Boot Version
+
+✅ **Less Code** - 50% less boilerplate  
+✅ **Auto-Configuration** - Database, JSON, CORS all automatic  
+✅ **Production Ready** - Health checks, metrics, monitoring built-in  
+✅ **Industry Standard** - Used by most Java enterprises  
+✅ **Better Testing** - Spring Boot Test framework  
+✅ **Faster Development** - Hot reload with DevTools  
+✅ **Easier Maintenance** - Clear structure and conventions  
+
+---
+
+## 📖 Learning Resources
+
+- [Spring Boot Documentation](https://spring.io/projects/spring-boot)
+- [Spring Data JPA Guide](https://spring.io/guides/gs/accessing-data-jpa/)
+- [Building REST APIs](https://spring.io/guides/tutorials/rest/)
+
+---
+
+## 🤝 Contributing
+
+This is an educational project demonstrating Spring Boot refactoring.
+
+---
+
+## 📄 License
+
+Educational project for learning Spring Boot.
+
+---
+
+**Version:** 1.0.0 (Spring Boot Edition)  
+**Last Updated:** March 6, 2026  
+**Original:** Pure Java with HttpServer  
+**Refactored:** Spring Boot 3.2 with Spring Data JPA
