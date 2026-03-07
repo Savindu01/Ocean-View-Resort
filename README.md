@@ -2,11 +2,7 @@
 
 A modern hotel reservation system built with **Spring Boot 3.2**, **Spring Data JPA**, and **React 18**.
 
-## 🚀 What Changed from Pure Java?
-
-This is a complete refactoring of the original pure Java implementation to use Spring Boot framework.
-
-### Key Improvements
+### Key Stacks
 
 | Feature | Pure Java | Spring Boot |
 |---------|-----------|-------------|
